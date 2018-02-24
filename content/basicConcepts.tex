@@ -8,12 +8,12 @@
 \chapter{Basic concepts}
 \label{chap:basicConcepts}
 
-We will use this section to introduce basic cryptographic building elements that will pervade the rest of this thesis.
+We will use this section to introduce basic cryptographic building elements that will pervade the rest of this report.
 
 
 \section{A few words about notation}
 
-One main objective in this thesis has been to collect, review, correct and homogenize all existing information
+One main objective in this report has been to collect, review, correct and homogenize all existing information
 concerning the inner workings of the Monero cryptocurrency.
 And at the same time supply all the necessary details to present all this material in a constructive and single-threaded
 manner.
@@ -135,7 +135,7 @@ An external observer would not be able to calculate easily the shared secret due
 \subsection{DSA signatures with elliptic curves (ECDSA)}
 
 Typically, a cryptographic signature is performed on a cryptographic hash of a message rather than the message itself.
-However, in this whole thesis we will loosely use the term {\em message} indistinctly to refer to the message properly speaking and/or its hash value.
+However, in this whole report we will loosely use the term {\em message} indistinctly to refer to the message properly speaking and/or its hash value.
 
 \subsubsection*{Signature}
 
@@ -167,7 +167,7 @@ Any third party can verify the signature by calculating
 The signature will be valid if and only if the first coordinate of \(Q = (x_Q, y_Q)\) satisfies that  
 \[x_Q = x \pmod p\]. 
 
-\subsubsection*{Correctness}
+\subsubsection*{Why it works}
 
 This stems from the fact that
 \begin{align*}
@@ -279,7 +279,7 @@ Verification is performed as follows
 
 
 
-\subsubsection{Correctness}
+\subsubsection{Why it works}
 
 Why the signature verification works can be derived from
 

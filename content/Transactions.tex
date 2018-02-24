@@ -12,7 +12,7 @@ The address of a user is the pair of public keys \((K_1, K_2)\). Her private key
 \\
 
 Using two sets of keys allows segregation of functions. The rationale will become clear later in this 
-thesis, but for the moment being let us advance that private key \(k_1\) will be called {\em view key} 
+report, but for the moment being let us advance that private key \(k_1\) will be called {\em view key} 
 whereas \(k_2\) will be the {\em spend key}. The former key will be used to determine whether an output is
 addressed to the user at hand, and the second one will be necessary to use the output in a spend
 transaction. 
@@ -98,7 +98,7 @@ Monero is a cryptocurrency under steady development.
 Transaction structures, protocols and cryptographic schemes are always prone to evolve
 to meet new objectives, or to avoid newly discovered threats.
 
-In this thesis we have focused our attention on {\em Ring Confidential Transactions} as they are implemented
+In this report we have focused our attention on {\em Ring Confidential Transactions} as they are implemented
 in the current version of Monero. Therefore we will not describe here any other transaction types, even if
 they are still partially supported,
 \\
@@ -200,8 +200,6 @@ Indeed, it will be the case that
 = & z G
 \end{align*}
 
-The values \(x_j\) will be the hash of shared secrets from previous transactions, and the values
-\(y_i\) will correspond to the shared secrets of the current transaction. 
 
 
 
@@ -320,8 +318,8 @@ takes the form of an n-tuple
 \[\sigma = (c_1, r_{1, 1}, r_{1, 2}, r_{2, 1}..., r_{64, 2} )  \]
 
 In the case of Borromean signatures, the ring keys are considered part of the signature.
-However, for verifiability it is only necessary to store the commitments \(K_j\), as the
-ring key counterparts can be derived as \(K_j - 2^j H\).
+However, for verifiability it is only necessary to store the commitments \(C_j\), as the
+ring key counterparts can be derived as \(C_j - 2^j H\).
 
 Respecting this convention, a range proof will require \( ( 1 + 64 \cdot 2 + 64  ) 32 = 6176\) bytes
 for each output.

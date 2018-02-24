@@ -13,28 +13,20 @@ In other words, a blockchain is a public distributed database, containing data w
 be disputed by any party.
 \\
 
-Cryptocurrencies store transactions in the blockchain. The latter acts as a public ledger of all the consensuated currency operations. Most cryptocurrencies store transactions in clear text, so that
-the receiver of a payment can easily verify that the sender is indeed in possession of the currency at hand.
+Cryptocurrencies store transactions in the blockchain. The latter acts as a public ledger of all the consensuated currency operations. Most cryptocurrencies store transactions in clear text, to facilitate the verification of transactions by the community.
 
 Clearly, an open blockchain defies any basic understanding of privacy, since it virtually 
 {\em publicizes} complete transaction histories of its users. 
 \\
 
-To address the lack of privacy, Bitcoin users can obfuscate transactions by using temporary intermediate addresses \cite{DBLP:journals/corr/NarayananM17}. However, in spite of such measures, with appropriate tools it is possible to analyze flows and to a large extent 
+To address the lack of privacy, users of cyrptocurrencies such as Bitcoin can obfuscate transactions by using temporary intermediate addresses \cite{DBLP:journals/corr/NarayananM17}. However, in spite of such measures, with appropriate tools it is possible to analyze flows and to a large extent 
 link true senders with receivers \cite{DBLP:journals/corr/ShenTuY15b, DK-police-tracing-btc, Andrew-Cox-Sandia}.
 
-In contrast, the cryptocurrency Monero, attempts to tackle the issue of privacy by storing only stealth, single-use addresses in the blockchain. In this manner, there is no effective way of linking senders with receivers nor tracing the origins of funds \cite{Monero-intro}.
+In contrast, the cryptocurrency Monero, attempts to tackle the issue of privacy by storing only stealth, single-use addresses in the blockchain. In this manner, there will be no effective way of linking senders with receivers nor tracing the origins of funds \cite{Monero-intro}.
 
 Additionally, transaction amounts in the Monero blockchain are concealed behind cryptographic constructions, so as to render more complicated to infer currency flows.
 
 The result is a high level of privacy, possibly unmatched by other common cryptocurrencies.
-\\
-
-And yet, privacy does not have to be in conflict with justifiable or lawful insight.
-Monero users have two private keys, one for {\em viewing} and another one for {\em spending}. 
-An authorized third party
-could have unabridged read access to the transaction history of a user by accessing his view key,
-without impacting privacy nor security.
 
 
 
@@ -48,7 +40,8 @@ As of December 28\nth, 2017, Monero occupies the 10\nth position as regards mark
 Unfortunately, there is little comprehensive documentation available describing the mechanisms it uses. 
 Even worse, important parts of the theoretical framework in the currency have been published
 in non peer-reviewed papers which are incomplete and/or contain errors.
-Quite often, only the software implementation is reliable enough as a source of information.
+For significant parts of the theoretical framework of Monero, only the source code is reliable enough as source
+of information.
   
 We intend to palliate this situation by collecting in-depth information about Monero's inner workings, 
 reviewing algorithms and cryptographic schemes, and by discussing the degree to which they might afford sufficient 
@@ -98,7 +91,7 @@ on ring signatures \cite{ledger34}.
 \section{Outline}
 
 As hinted earlier, our aim has been to deliver a self-contained and step-by-step description of the Monero
-cryptocurrency. This thesis has been structured to fulfill this objective and
+cryptocurrency. This report has been structured to fulfill this objective and
 lead the reader through all elements needed to describe the inner workings of the currency.
 \\
 
@@ -111,11 +104,9 @@ confidential but linkable transactions.
 
 In Chapter \ref{chapter:pedersen-commitments} we introduce the cryptographic mechanisms used to conceal amounts.
 
-Finally, with all the participating elements in place we will be able to expose the transaction
+Finally, with all the components in place we will be able to expose the transaction
 schemes used in Monero in Chapter \ref{chapter:transactions}.
 
-Chapter \ref{chapter:privacy} is dedicated to discuss the degree to which all the artifacts employed by Monero
-do deliver transaction privacy.
 
 %While seemingly outside the main focus of this thesis, we also found that
 %the consensus algorithm in Monero would interest readers. 
@@ -124,7 +115,6 @@ do deliver transaction privacy.
 %and resilience to attacks relying on computing power. We have dedicated Chapter  \ref{chapter:consensus}
 %to putting forth the principles of the consensus algorithm in Monero.
 
-In Chapter \ref{chapter:conclusion} we convey a few concluding remarks.
 
 Appendices \ref{appendix:RCTTypeFull} and \ref{appendix:RCTTypeSimple} describe the structure of sample
 transactions in the blockchain, providing a connection between the theoretical elements described in earlier sections with 
