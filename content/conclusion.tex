@@ -1,0 +1,95 @@
+% this file is called up by main.tex
+% content in this file will be fed into the main document
+
+% ---------------------------------------------------------------------------
+
+\chapter{Conclusion}
+\label{chapter:conclusion}
+
+The main goal of this thesis has been to present a complete picture of the cryptographic mechanisms used in Monero
+to attain confidential transactions. There is a notable lack of documentation of the currency, and in particular,
+the cryptographic aspects are only described in incomplete and non peer-reviewed papers, which contain important
+errors.
+
+All of this justified our endeavour. We have aimed at producing a self-contained, consistent and single-threaded description,
+with sufficient, but not overwhelming, mathematical rigor. Balancing on a thin line between mathematical cryptography 
+and computer science,
+we think we have successfully targeted readers from both fields without sacrificing rigor nor applicability.
+
+
+\section{Is privacy synonymous with opacity?}
+
+Cryptocurrencies have often been associated with obscure underworld transactions.
+At first sight it might seem that the privacy mechanisms offered by Monero are a step further
+on the way to make transactions even more opaque to justifiable insight.
+
+However, this is not necessarily the case.
+We have shown that it is possible to meet the desire for privacy of cryptocurrency users, yet
+allowing for transparency when needed. 
+
+An authority could have access to the transaction history
+of a user without putting at risk privacy, as it is commonly understood.
+This is conveyed by the segregation of roles of user keys, where one allows {\em viewing}
+and another one {\em spending}. 
+\\
+
+In other words, it is possible to attain the benefits of a decentralized blockchain
+without compromising lawful transparency.
+
+
+
+\section{Should you use or invest in Monero?}
+
+In view of the hype currently surrounding cryptocurrencies, many a reader will no doubt wonder if {\em investing} in
+cryptocurrencies is a good idea. We have not aimed at all at answering such questions in this thesis.
+
+In our opinion, however, at its core, a currency is only a means of facilitating exchange of wares. Without 
+financial instruments
+in a currency it is hardly possible to {\em invest}. Existing cryptocurrencies do not have financial instruments
+at the moment this is written, with the only feeble exception of the newly created Bitcoin Futures.
+\\
+
+In sum, we do not think it is possible to {\em invest}, properly speaking, in cryptocurrencies. 
+At most, one can speculate or
+bet on rising exchange rates.
+
+The current rise in exchange rates is undoubtedly due to the ever increasing flows of money into the
+currencies, and the fact that supply is limited. This contributes further to characterize so-called
+investments as speculation.
+\\
+
+Monero is still a relatively small cryptocurrency. As we have shown here, the cryptographic artifacts it uses
+are purposeful and well designed. However, our impression is that there is still a gap in research
+around confidentiality. In Chapter \ref{chapter:privacy} we presented 2 research papers that
+tried to quantify the degree of untraceability of transactions. They are in no way conclusive and we think
+more is needed to be able to reasonably ascertain whether transactions are truly confidential.
+
+For mass-scale usage, the currency has the problem of the space it consumes in the blockchain, which in the end
+limits the maximum throughput in terms of transactions.
+
+Also, we feel that the Monero Research Lab should adopt a more structured approach to software releases.
+Our impression is that some releases contain important last-minute decisions. Additionally, the standard
+code base suffers from readability issues, a consequence of the fact that it has been produced mainly
+by a few non-software developers. For production usage of something as important as a currency,
+one would desire a more disciplined software engineering approach.
+\\
+
+Should one use the Monero currency? Perhaps, but being aware of the real risks.
+
+   
+ 
+
+\section{Future work}
+\label{sec:futureWork}
+
+We believe that our work could have an intrinsic value for the Monero community. As mentioned, there is little documentation
+available. In consequence, we intend to make an edited version of this thesis available to the community.
+
+Beyond that, we are intrigued about coming developments of new signature schemes, which consume \(\mathcal{O}(\log n)\)
+space, and which would allow for larger ring sizes.
+As we have hinted earlier, ring sizes as well as a careful selection of members is critical to ensure untraceability.
+Therefore, a new signature scheme consuming space as described would be a welcome development and worth researching.
+
+
+
+

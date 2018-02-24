@@ -1,0 +1,301 @@
+
+
+\begin{appendices}
+
+\renewcommand{\theFancyVerbLine}{%
+	\textcolor{red}{\small
+		\arabic{FancyVerbLine}}}
+	
+	
+\chapter{{\tt RCTTypeFull} Transaction structure}
+\label{appendix:RCTTypeFull}
+
+We present in this chapter a dump from a real Monero transaction of type {\tt RCTTypeFull}, 
+together with explanatory notes for relevant fields.
+
+The dump was obtained executing command {\tt print\_tx <TransactionID>} in the {\tt monerod} daemon 
+run in non-detached mode.
+The first line printed shows the actual command run, which the interested reader can use to replicate our results.
+\\
+
+For editorial reasons we have shortened long hexadecimal chains, presenting only the beginning and end
+as in {\tt 0200010c7f[...]409}.
+\\
+
+Component {\tt rctsig\_prunable}, as indicated by its name, is in theory {\sl prunable} from the blockchain. 
+That is, once a block  has been consensuated
+and the current chain length rules out all possibilities of double-spending attacks, this whole field could be pruned.
+This is something that has not yet been done in the Monero blockchain, but it is nevertheless a possibility.
+This would yield considerable space savings. 
+
+Key images and ring keys are stored separately, in the non-prunable area of transactions.
+Indeed, these components are essential for detecting double-spend attacks and can not be pruned away.
+\\
+
+Our sample transaction has 1 input and 2 outputs.
+
+
+\begin{Verbatim}[commandchars=\\\{\}, numbers=left]
+print_tx  b43a7ac21e1b60ad748ec905d6e03cf3165e5d8c9e1c61c263d328118c42eaa6 
+Found in blockchain at height 1467685
+0200010c7f[...]409
+\{
+   "version": 2,
+   "unlock_time": 0, 
+   "vin": [ \{
+      "key": \{
+         "amount": 0, 
+         "key_offsets": [ 799048, 782511, 1197717, 216704, 841722
+         ], 
+         "k_image": "595a612d0df27181c46a8af70a9bd682f2a000124b873ba5d2b9f4b4e4efd672"
+      \}
+   \}
+   ], 
+   "vout": [ \{
+      "amount": 0, 
+      "target": \{
+         "key": "aa9595f55f2cfaed3bd2a67453bb064dc7fd454a09c2418d7338782790185fe3"
+      \}
+   \}, \{
+      "amount": 0, 
+      "target": \{
+         "key": "0ccb48ed2ebbcaa8e8831111029f3300069cff0d1408acffbfc3810b362ea217"
+      \}
+   \}
+   ], 
+   "extra": [ 2, 33, 0, 129, 70, 77, 194, 248, 93, 24, 94, 15, 107, 233, 0, 229, 82, 
+   175, 243, 123, 58, 204, 135, 171, 100, 101, 192, 42, 187, 157, 168, 222, 98, 192, 
+   110, 1, 1, 185, 87, 22, 38, 116, 81, 124, 85, 68, 36, 44, 229, 235, 46, 159, 139, 
+   114, 234, 211, 50, 41, 28, 92, 26, 249, 184, 228, 197, 64, 139, 5
+   ], 
+   "rct_signatures": \{
+      "type": 1, 
+      "txnFee": 26000000000, 
+      "ecdhInfo": [ \{
+         "mask": "68f508c5515694ce5a33b316b990e8b67a944725c93d806767e61b2e0b13d300", 
+         "amount": "913372a2424b22bd9712183f5a7c8027c8d9af89b52d1e7d06fd1f87a1e5d20d"
+      \}, \{
+         "mask": "fbc3e5bdb36fc58e5800ffc549ab7bd533fadb7e6b64898c82ea620d749fc80e", 
+         "amount": "b9335c3dc0afb774f812f9f58a412c849f3c828d873f1c16ab102963799d9809"
+      \}], 
+      "outPk": [ "cf141f5dfe04df14afad6b451d600aa5826a9be44a76a1630850c1d5951d482e",
+                 "e10bb69b66af5dabec765c7f5f7528926088877fa36746833828a0575896ae57"]
+   \}, 
+   "rctsig_prunable": \{
+      "rangeSigs": [ \{
+         "asig": "b9b544a7[...]d4c5726e81c4c4b6205dacc05208", 
+         "Ci": "bc7ae457[...]fe490458"
+      \}, \{
+         "asig": "9c457b41[...]545b60c", 
+         "Ci": "ce9b4d8e[...]03a6752"
+      \}], 
+      "MGs": [ \{
+         "ss": [[ "a8120b96f5f2ac5bceab37f7d6bf8d86554d87c4af3441007cad92f54a24d908",
+          "2e6bc016297a5d398936c9f45e7a80215138f69e55179b337922e2d51c1a9f00"], 
+          ["1e1052a68c38bb88b6e8f257d999c13f1d5f4fa219cc23479ccbfa6b14b5960a",
+           "e914d35eed0d27344fbc3a89b91bd445d433b561efc844c9f466a61ebb5f6d09"], 
+          ["e04d011f515461fdbd8d13536c23143dc365d87dd323defb1af834e540a8fc0e",
+           "f9b41a117a1415fec54f1cc16aeef859b2cab1494b9e26a95fc9eaf4f571fa00"], 
+          ["de7a7b30795cab310b632f708c6c2546847a5cbcc27ff48e75c1556c3f6f180c",
+           "6218695558359d115e308b008d9aa368c38672732d2fc21c6317ad7d15918c05"], 
+          ["0ca70bbdea0e391b1e24e2540f33b48dd9dc554c61ebf23bb3691aab5094e40f",
+           "dafecd436b2448504c0a3a1997b356c141f1d4b5977cc66e5f55592f13731501"]],        
+         "cc": "5059757cf06216215955aaa108e8dd40be157856749a9d883bcac611e395a409"
+      \}]
+   \}
+\}
+
+\end{Verbatim}
+
+\section*{Transaction components}
+	
+\begin{itemize}
+	\item {\tt vin} (line 7-14) - List of inputs
+	\item {\tt amount} (line 9) - Deprecated amount field for type 1 transactions
+	\item {\tt key\_offset} (line 10) - Relative offsets respect to previous block of ring components, spent output and mixin outputs. As an illustration, 799048 is to be interpreted as the 799048\nth transaction counting backwards from
+	the current transaction and starting from the previous block
+	\item {\tt k\_image} (line 12) - Key image \(\tilde{K_j}\) from Section \ref{sec:MLSAG}
+	\item {\tt vout} (lines 16-27) - List of outputs
+	\item {\tt amount} (line 17) - Deprecated amount field for type 1 transactions
+	\item {\tt key} (line 19) - One-time destination key as described in Section \ref{sec:one-time-addresses}
+	\item {\tt extra} (lines 28-32) - Miscellaneous data, including the Transaction key, or share secret \(rG\) of
+	    Section \ref{sec:one-time-addresses}
+	\item {\tt rct\_signatures} (lines 33-45) - First part of signature data
+	\item {\tt type} (line 34) - Signature type, in this case {\tt RCTTypeFull}
+	\item {\tt txnFee} (line 35) - Transaction fee in clear, in this case 0.026 XMR
+	\item {\tt ecdhInfo} (lines 36-42) - Encrypted mask and amount of each of the outputs
+	\item {\tt mask} (line 37) - Field {\sl mask} as described  in Section \ref{amount-commitments}
+    \item {\tt amount} (line 38) - Field {\sl amount} as described in Section \ref{amount-commitments}
+    \item {\tt outPk} (lines 43-44) - Output commitments
+    
+    \item {\tt rctsig\_prunable} (lines 46-67) - Second part of signatures
+    \item {\tt rangeSigs} (lines 47-53) - Range proofs for output commitments
+    \item {\tt asig} (line 48) - Borromean signature of the amount, see Section \ref{range-proofs-space} 
+    \item {\tt Ci} (line 49) -  Borromean commitments (ring keys), as described in Section \ref{full-signature}. As
+    hinted in Section \ref{range-proofs-space} only the \(K_j\) need to be stored, as the values \(K_j - 2^j H\)
+    can be easily derived by the network.
+    \item {\tt MGs} (lines 54-66) - Remaining elements of the MLSAG signature
+    \item {\tt ss} (lines 55-64) - Components \(r_{i,j}\) from the MLSAG signature
+      \[\sigma(\mathfrak{m}) = (c_1, r_{1, 1}, ..., r_{n, 1}, ..., r_{1, m}, ..., r_{n, m}, \tilde{K}_1, ...,  \tilde{K}_m) \]
+    \item {\tt cc} (line 65) - Component \(c_1\) from aforementioned MLSAG signature
+	
+\end{itemize}
+
+
+
+\chapter{{\tt RCTTypeSimple} Transaction structure}
+\label{appendix:RCTTypeSimple}
+
+
+In this section we show the structure of a sample transaction of type {\tt RCTTypeSimple}.
+The transaction has 4 inputs and 2 outputs.
+
+
+
+\begin{Verbatim}[commandchars=\\\{\}, numbers=left]
+print_tx 3ebf45fc5f8fd683037807384122817d5debfa762c7a7845cb7ccfe9ee20940b 
+Found in blockchain at height 1469563
+020004[...]923b3d70d
+\{
+  "version": 2, 
+  "unlock_time": 0, 
+  "vin": [ \{
+      "key": \{
+        "amount": 0, 
+        "key_offsets": [ 1567249, 1991110, 349235, 15551, 3620
+        ], 
+        "k_image": "9661119b4b54529e1be14ef97fbdc0504d17a6c8dfedd55d2455b93a6336bb41"
+      \}
+    \}, \{
+      "key": \{
+        "amount": 0, 
+        "key_offsets": [ 2502375, 650851, 337433, 396459, 39529
+        ], 
+        "k_image": "2102414d8edfa229f9ebf32ab90acd9cf23963a8c3b6ba0e181fc1d5782c046c"
+      \}
+    \}, \{
+      "key": \{
+        "amount": 0, 
+        "key_offsets": [ 1907097, 696508, 806254, 510195, 6709
+        ], 
+        "k_image": "de14ec8958b311bd38a05aa3fb08fdd360001f1b9c060264eecdd8c08c9e83c4"
+      \}
+    \}, \{
+      "key": \{
+        "amount": 0, 
+        "key_offsets": [ 1150236, 1943388, 788506, 37175, 7462
+        ], 
+        "k_image": "e470f77dd5a4149210cb61ee107e73caea1ef9f61d05384e3bd4372fdc85bf17"
+      \}
+    \}
+  ], 
+  "vout": [ \{
+      "amount": 0, 
+      "target": \{
+        "key": "787cad1ebb181e1fc04b24d4d06c3d2882c38b262a7635de8ad487c536e40a12"
+      \}
+    \}, \{
+      "amount": 0, 
+      "target": \{
+        "key": "faf4137928392b39ccf0a830c0261573009959787697f9d4fb769c25781fb911"
+      \}
+    \}
+  ], 
+  "extra": [ 1, 20, 56, 120, 111, 89, 89, 64, 10, 98, 96, 255, 202, 235, 203, 
+             255, 2, 197, 176, 147, 61, 60, 41, 145, 207, 178, 212, 71, 37, 69, 19, 
+             147, 205], 
+  "rct_signatures": \{
+    "type": 2, 
+    "txnFee": 558805800000, 
+    "pseudoOuts": [ "64dea29ac5560f93773240d58ca5768b879fd3c95e0b3b50a80ec36a6ff3a6da",
+                    "a60e7a00e65ff2a6299b92b166a629e9b0d62f6df50e40535140716757efe4c0", 
+                    "4c67403adbc9dc0ca5a1a6abc846ab6d232dc3fa295099b3c7a9d005bac60eba", 
+                    "635b26d78117d77899859ecb61e10125c3956a5c113b932f33c92c561acddaa3"], 
+    "ecdhInfo": [ \{
+        "mask": "ccffac42a86bec7b36ce9957cbdfe481d419bc5353335d0c236c347aea758d0c", 
+        "amount": "c0d6cf3e1db55dd459b73faf34d7339c3fa1b3d3356cfb2adc3faf798264b00e"
+      \}, \{
+        "mask": "62cc846003d9c5425c6cf33b30754a4c044f5d9d02621460e45664b886673109", 
+        "amount": "726dbacad62022bf0f5af05c72482b3f040d631d3f576b5e2615ea72f84c5f06"
+      \}], 
+    "outPk": [ "cb3b729b4fca6e66736666201633e3f905c367a2f3d18e31fe3d3c18d2be93fd", 
+               "1e8c86b7f211a99e1762bf62254efe65ea5c5328b62b0ea8d679b2e52800f633"]
+  \}, 
+  "rctsig_prunable": \{
+    "rangeSigs": [ \{
+        "asig": "9bb7cce09[...]61de7ce0a", 
+        "Ci": "50dfd2e8[...]b3a7c8fca1b1"
+      \}, \{
+        "asig": "e3905fa5c[...]b5213444908", 
+        "Ci": "595c2cec5f2[...]72a628ab5c"
+      \}], 
+    "MGs": [ \{
+        "ss": [ [ "3b2d26ea7628015fd8317e4e298ceda6b534ac894b83f7b6190a353cee6ec702", 
+                  "2d772ad7b7ff2ba8a1a66c8d69c0a0d49d72808eaf803c59f13c3d78b653440c"], 
+                [ "c188891fb37d76305f0209222f52d22ede43018facfe91f949ecb8dcf709b30a", 
+                  "303896ca67ea7969544641d5bb94a436558bcf6522bb9bc77bd1abb5f2146c08"], 
+                [ "e01c88b7308403a9dd023d9eacf1ade17ab0fa54250148431b5a33c98e636100", 
+                  "ba36e34e5245e89c7c21af845b949cf3e82188df639390f094e31c9ba773060c"], 
+                [ "37175d72d2bef3f8bd9e65fb2861f7bce91e3b1e30278b2dcf26112831ac9405", 
+                  "8e77a5dd641a89e86dbe0708e8f59d0e2dc9fe4ddfd9b367c3a93522198a4706"], 
+                [ "fbb4f94f9ce0f081421e63677a63d5914f0536a481d57b6e5fc5379c84dfcb05", 
+                  "1ec40aa3c8a94c6b1915b7796423b0d7d6011aa2d6af636aff309b832f193408"]], 
+        "cc": "a03119e4257cca37f89ac3e97f0598b712c79162c73932d58ab4ce08c4ad6709"
+      \}, \{
+        "ss": [ [ "f7aedeec462d7588330c71589fde5f0f234a627a6e5ed72cff34825a04d41707", 
+                  "31d7a5ba4e782db5c0704ab751a2ef8c4732f3cf699bc8f9994e79a97cd3190e"], 
+                [ "00e1d1ecdf31fdf7d57661f2234bfc859cfdc4dbfdfd0f5eec0576ef22592203", 
+                  "fdf08b803fa6de18bf0e0dc6855e877877bda0101eceb81e2223fe0175606300"], 
+                [ "3397ba3f9e8db066e3c4911b896debefbc73efbac4988e6aff5731ff8db15405", 
+                  "43d2b03d5263de99f56c256e646be503edd63dd03d377a469379fbf487e8600e"], 
+                [ "31afd1d5c3b07170ac127605fc35cbcc19cf963a35b2ff8f804e17e3b804000d", 
+                  "3a3bc124a10b0cf416656f8f682a427445140895440cca644c6aa38966399f0c"], 
+                [ "f499f0e4922d5cba35e3cc033489b60ec7ea26ff19cc9dd29357670f4bf8790b", 
+                  "1a4732b31f0f1a7d3322be5c4baca098f0a032c192bf9f8a6b5fd83cbdd9d401"]], 
+        "cc": "095fcab7ebf64c2ffecdacf11b70f97f0e709de0a84b3a13abca627f9df2c901"
+      \}, \{
+        "ss": [ [ "1808924b4154118c48f0b305562b6ffba86f38c64d4d8a087823f3383cddd006", 
+                  "4b18544be50aee8c4594b568d6be741c155a132cb83392d9b1a4cf35c3d5760c"], 
+                [ "9a95eeeecf3c3a48c43873a372c263357ff5f258a7bf8ed29a767237b0b0f202", 
+                  "4f1ea4d9d4b56db780dd078a3e8219d0f54eaccc197901671002a206f063cb0e"], 
+                [ "2c800017cab2b8388f58fed0d61a46570f64cacd8fabc4e84ddee735b3135f0a", 
+                  "458016f6fdf58b329fae0f929226ee2b8e410a14db8c6ede9b74fb718de71507"], 
+                [ "ea0fcaf793602dce25c8b2c4d17163f4298933b3fb09874307d8cde9a63c2c0c", 
+                  "df76fbcd336c07f37e90e1a0d0db1ba49519ba4325062228bc9242af2c525703"], 
+                [ "e3a7a0477eeb602a9a8203a6a496cca90c4769d57410246c4c8d665df34df900", 
+                  "44d206154f0ca85e12a92eefdbc3784e17e701a32ff93b550467679f67500c0d"]], 
+        "cc": "6f80de1c1d566776d2831f15c9a85fb1d8e8cecfd0d2753b318f0e84d89d3b08"
+      \}, \{
+        "ss": [ [ "5b82b4644b57e3d623de7c72c6ebd52959815c12c80b479e4cbe5437cf67640c", 
+                  "b70e0b69c75faba6a1630429f9f497db351347c210467f69e1b1c5f1a72afe02"], 
+                [ "f25a93a98f980cf489eb8f69369f4ec63eaea91fd677decab9b6ca0fe2feb606", 
+                  "124536c374cb6023a6aa6f22ae6e115a1ba12cb36c48f5f5ad43ce90f471da02"], 
+                [ "151ddc82322456d7f31b8b4b2290098c3bf2428370c7ef325660b5463ff26404", 
+                  "2fb9d2979e16c2b1131686bb85068ec559f9c6c64581e609b451bb2cd9d5740d"], 
+                [ "c03bed01d6ad60b3da5d2c88cf2e5023b51133c37e4917511715a11f09d8740d", 
+                  "432e01c2075ab6361af8636cc1c9254e12db98f5c323088792dfb42a1c894401"], 
+                [ "52206d801214e70d20ee7ca53823c143aa06c3d1b22b118cc8a15c9f861f0102", 
+                  "563c134f56f7a290e0980877e93bc4b08651e53dade079b1e6c066b70fb81406"]], 
+        "cc": "4102cd245db3e0d7c0e2280cfdba38b9b7a7ad8715b8fe68c1170cf923b3d70d"
+      \}]
+  \}
+\}
+
+
+
+\end{Verbatim}
+
+\section*{Transaction components}
+
+What follows is a short explanation of most important elements in transactions.
+We do only mention components that are specific or differ from the previous {\tt RCTTypeFull} transaction type.
+
+
+\begin{itemize}
+	\item {\tt type} (line 53) - Signature type, in this case the value 2, corresponding to {\tt RCTTypeSimple} transactions
+    \item {\tt pseudoOuts} (lines 55-58) - Pseudo-outputs used for commitments to zero against the real previous outputs, 
+       as described in Section \ref{RCTTypeSimple-commitments}. Please recall that the sum of these commitments will
+       equal the sum of the 2 output commitments of the transaction. 
+\end{itemize}
+
+\end{appendices}

@@ -1,0 +1,476 @@
+
+
+\chapter{Monero Transactions}
+\label{chapter:transactions}
+
+\section{User keys}
+
+Unlike Bitcoin, Monero users have two sets of private/public keys. 
+\((k_1, K_1)\) and \( (k_2, K_2) \), generated as described in Section \ref{ec:keys}.
+
+The address of a user is the pair of public keys \((K_1, K_2)\). Her private keys will be the corresponding pair \( (k_1, k_2) \).
+\\
+
+Using two sets of keys allows segregation of functions. The rationale will become clear later in this 
+thesis, but for the moment being let us advance that private key \(k_1\) will be called {\em view key} 
+whereas \(k_2\) will be the {\em spend key}. The former key will be used to determine whether an output is
+addressed to the user at hand, and the second one will be necessary to use the output in a spend
+transaction. 
+
+
+
+
+\section{One-time addresses}
+\label{sec:one-time-addresses}
+
+As described, every Monero user has a pair of public keys as public address. 
+However, this address is never used directly.
+Instead, new addresses based on a Diffie-Hellman-like exchange are created every time an amount is to be paid to a user.
+In this way, external observers will not be able to identify receivers in transactions.
+\\
+
+Imagine a very simple transaction, containing exactly one input and one output --- a payment from Alice to Bob.
+
+Bob has private/public keys \((k_{B_1}, k_{B_2})\) and \((K_{B_1}, K_{B_2})\).
+To create one-time keys, Alice would proceed as depicted here (see \cite{cryptoNoteWhitePaper}):
+
+
+\begin{enumerate}
+	\item Alice generates a random number \(r\) such that \(1 < r < N\), and calculates the output public key \(K_{o} = \mathcal{H}_n (r K_{B_1} ) G + K_{B_2}\)
+
+	\item Alice sets \(K_o\) as the addressee of the payment, adds the value \(r G\) to the transaction data and submits it to the network. The value \(r G\) will be used by the receiver to calculate a Diffie-Hellman-like shared secret.
+	
+	\item Bob receives the data and sees the value \(r G\). Hence, he can calculate \(k_{B_1} r G = r K_{B_1}\). Therefore, he will also be able to calculate \(K_{o} = \mathcal{H}_n(r K_{B_1}) G + K_{B_2}\). When he sees the addressee of the output he will know that it is addressed to him.
+	
+	\item The one-time keys for the output are
+	\begin{align*}
+		K_o &= \mathcal{H}_n (r K_{B_1}) G + k_{B_2} G = (\mathcal{H}_n (r K_{B_1}) + k_{B_2} ) G \\ 
+		k_o &= \mathcal{H}_n (r K_{B_1}) + k_{B_2}
+	\end{align*} 
+\end{enumerate}
+
+While Alice can calculate the public key for the address, she can not compute the corresponding private key, since it would require either knowing Bob's second private key, or solving the discrete logarithm problem for \(K_{B_2} = k_{B_2}G\), which we assume to be hard.
+\\
+
+
+As mentioned earlier, the private key \(k_{B_1}\) is often called the {\em view key}. The reason is that it allows a third
+party to verify if an output is addressed to Bob, and yet, without the knowledge of the other
+private key, \(k_{B_2}\), this third party would not be able to spend the amount, as he would not
+be able to sign with the private key of the one-time address.
+
+Such a third party could be a trusted custodian, an auditor, a tax authority, etc. Somebody who would
+have read access to the user's transaction history, without any further rights.
+This third party would also be able to decrypt the amounts of Section \ref{amount-commitments}.
+\\
+
+
+The private key \(k_o\) can only be calculated with knowledge of \(k_{B_2}\). As we will see,
+spending an output will require calculating \(k_o\), which in turn entails knowing the {\em spend key}
+\(k_{B_2}\).
+
+
+\subsection{Multi-output transactions}
+
+Most transactions will contain more than one output. 
+If nothing else, to transfer back any change to the sender himself.
+
+Monero senders generate only one random value \(r\). The value \(r G\) is normally known as the 
+{\em Transaction public key} and is published in the blockchain.
+
+To ensure that all output addresses in a transaction are different even in cases where the same addressee is
+used twice, Monero uses the output index.
+Every output will have an index \(l \in \{1, ..., s\}\). 
+By appending this value to the shared secret before hashing it, one can ensure that the resulting
+addresses will be unique:
+
+\begin{align*}
+  K_o &= \mathcal{H}_n (r K_{B_1}, l) G + k_{B_2} G = (\mathcal{H}_n (r K_{B_1}, l) + k_{B_2} ) G \\ 
+  k_o &= \mathcal{H}_n (r K_{B_1}, l) + k_{B_2}
+\end{align*} 
+
+ 
+
+
+
+\section{Transaction types}
+
+Monero is a cryptocurrency under steady development.
+Transaction structures, protocols and cryptographic schemes are always prone to evolve
+to meet new objectives, or to avoid newly discovered threats.
+
+In this thesis we have focused our attention on {\em Ring Confidential Transactions} as they are implemented
+in the current version of Monero. Therefore we will not describe here any other transaction types, even if
+they are still partially supported,
+\\
+
+The transaction types we will describe in this section are {\tt RCTTypeFull} and {\tt RCTTypeSimple}.
+The former category follows closely the ideas exposed by S.Noether at al. in \cite{ledger34}.
+At the time the paper was written, the intention was most likely to replace fully the original CryptoNote
+transaction scheme by the new scheme.
+
+However, for multi-input transactions and with the formulation used in the paper mentioned,
+the signature scheme used was thought to entail a risk on traceability. 
+This will become clear when
+we supply technical details, but as it stands let us advance that if one spent output would become
+identifiable, then the rest of the spent outputs would also become identifiable.
+This would have an impact on the traceability of currency flows, not only for the transaction originator
+affected, but also for the rest of the blockchain.
+\\
+
+To mitigate this risk, the Monero Research Lab decided to use a related, yet different signature scheme
+for multi-input transactions. The transaction type {\tt RCTTypeSimple} is the one used in these
+occasions. The main difference, as we will see later, is that each input will be signed independently.
+
+
+
+\section{ Ring Confidential Transactions of type {\tt RCTTypeFull}}
+
+By default, the current code base applies this type of signature scheme when transactions have only one
+input. The scheme itself allows multi-input transactions, but when it was introduced, the Monero Research Lab
+decided that it would be advisable to use it only on single-input transactions.
+For multi-input transactions, existing Monero wallets use the {\tt RCTTypeSimple} scheme described later.
+
+Our perception is that the decision of doing so was rather hastily taken, and that it might change in the future,
+perhaps if the algorithm to select additional mix-in outputs is improved and the ring sizes are increased.
+Also, S. Noether's original description in \cite{ledger34} did not envision constraints of this type.
+At any rate, this is not a hard constraint. 
+An alternative wallet might indeed choose to sign transactions using either scheme, independently of the
+number of inputs involved.
+
+We have therefore chosen to describe the scheme as if it were meant also for multi-input transactions.
+\\
+
+An actual example of transactions of this type, with all its components, can be inspected
+in Appendix \ref{appendix:RCTTypeFull}.
+
+
+\subsection{Amount Commitments}
+\label{amount-commitments}
+Recall from Section \ref{sec:pedersen_monero} that we had defined a commitment to an amount \(b\) as:
+\[C(b) = x G + b H\]
+
+In the context of Monero, it is necessary that the receiver can verify that the amount in an output is the one promised. This means that the blinding factor \(x G\) must be somehow communicated to the receiver.
+
+The solution adopted in Monero is to transmit this value to the receiver by using the Diffie-Hellman shared
+secret \(r K_{B_1}\).
+For each transaction output in the blockchain there will be 2 values called \(mask\) and \(amount\)
+satisfying 
+
+\begin{align*}
+  \mathit{mask}     &= x + \mathcal{H}_n (r K_{B_1}) \\
+  \mathit{amount}   &= b + \mathcal{H}_n (\mathcal{H}_n (r K_{B_1}))
+\end{align*}
+
+The receiver will be able to calculate backwards the blinding factor \(x\) and the amount \(b\).
+He will also be able to check that the commitment provided in the transaction corresponds to the amount at hand.
+
+Furthermore, a third party with  access to the view key mentioned earlier would also be able
+to decrypt the amount at hand.
+
+
+
+\subsection{Commitments to zero}
+
+Assume that the sender of the transaction has previously received amounts \(a_1, ..., a_m\)  from various outputs,
+addressed to one-time addresses \(K_{\pi, 1}, ..., K_{\pi, m}\) and 
+with commitments \(C^a_{\pi, 1}, ..., C^a_{\pi, m}\). 
+
+This sender knows the
+private keys \(k_{\pi, 1}, ..., k_{\pi, m}\) corresponding to the one-time addresses.
+The sender knows also the blinding factors used in commitments \(C^a_{\pi, i}\).
+
+A transaction consists of inputs \(a_1, ..., a_m\) and outputs \(b_1, ..., b_s\) such that \(\sum\limits_j a_j - \sum\limits_i b_i = 0\). 
+ 
+The sender re-uses the commitments from the previous outputs, \(C^a_{\pi, 1}, ..., C^a_{\pi, m}\),
+and creates commitments for \(b_1, ..., b_s\).
+Let these commitments be \(C^b_{\pi, 1}, ..., C^b_{\pi, s}\)
+
+As hinted in Section \ref{sec:pedersen_monero}, the sum of the commitments will not be truly 0, but a curve point \(zG\):
+\[\sum\limits_j C^a_{\pi, j} -\sum\limits_i C^b_{\pi, i} = z G  \]
+
+It is precisely the knowledge of value \(z\) by the sender 
+what characterizes this equation as a {\em commitment to zero}.
+Indeed, it will be the case that 
+
+
+\begin{align*}
+& \sum\limits_j C^a_{\pi, j} - \sum\limits_i C^b_{\pi, i} \\
+= & \sum\limits_j x_j G - \sum\limits_i y_i G + (\sum\limits_j  a_j - \sum\limits_i  b_i) H\\
+= & \sum\limits_j x_j G - \sum\limits_i y_i G \\
+= & z G
+\end{align*}
+
+The values \(x_j\) will be the hash of shared secrets from previous transactions, and the values
+\(y_i\) will correspond to the shared secrets of the current transaction. 
+
+
+
+
+
+\subsection{Signature}
+\label{full-signature}
+
+
+
+The sender selects \(q\) sets of size \(m\), of additional unrelated addresses from the blockchain, corresponding to apparently unspent outputs. 
+She mixes the addresses in a {\em ring}, adding false commitments to zero, as follows:
+
+\begin{align*}
+  \mathcal{R} = \{ &\{K_{1, 1}, ..., K_{1, m}, (\sum\limits_j C_{1, j} - \sum\limits_i C^b_{\pi,i})\}, \\
+  &... \\
+  &\{K_{\pi, 1}, ..., K_{\pi, m}, (\sum\limits_j C^a_{\pi, j} - \sum\limits_i C^b_{\pi,i})\}, \\
+  &... \\
+  &\{K_{q+1, 1}, ..., K_{q+1, m}, (\sum\limits_j C_{q+1, j} - \sum\limits_i C^b_{\pi,i})\}\}
+\end{align*}
+\\
+
+Looking at the structure of the key ring, we see that if it were the case that \[\sum\limits_j C^a_{\pi, j} -\sum\limits_i C^b_{\pi, i} = 0\] then any observer would recognize the set of addresses
+\[\{K_{\pi, 1}, ..., K_{\pi, m}\} \]
+as the ones in use as inputs, and therefore currency flows would be traceable.
+
+With this observation made we can see why commitments to zero means in reality that they sum to a value \(z G\).
+
+
+\begin{description}
+	
+	\item [Step 1: Signature of outputs]
+	The private keys for 
+	\(\{K_{\pi, 1}, ..., K_{\pi, m}, (\sum\limits_j C_{\pi, j} - \sum\limits_i C^b_{\pi,i})\}\)
+	are \(k_{\pi, 1}, ..., k_{\pi, m}, z\), which are known to the sender. 
+	Hence, he will be able to apply the MLSAG
+	signature scheme to sign the set of outputs/commitments 
+	\(\{ (K_{t, 1}, C_{b, 1}), ..., (K_{t, s}, C_{b, s}) \}\) with the whole ring.
+	
+	\item[Step 2: Range proofs]
+	To avoid the amount ambiguity of outputs described in Section \ref{sec:range_proofs}, the sender must also employ the Borromean signature scheme of Section \ref{sec:borromean} to sign ranges.
+	
+	The corresponding inputs do not need to be signed explicitly, since the commitments stem from previously signed outputs.
+	
+	In the current version of the Monero software, each amount is expressed as a fixed point number of 64 bits.
+	Hence the ring will contain \(2\cdot 64\) keys.
+	
+	
+	
+	
+\end{description}
+
+
+\subsection{Transaction fees}
+
+Transaction fees are stored in clear in the data transmitted to the network.
+Miners must be able to verify that \(z G\) includes a transaction fee, in order to add
+the corresponding additional output to themselves.
+In turn, this means that this amount must also be turned into a commitment.
+
+The solution is to calculate the commitment of the fee \(f\) without the masking effect of any blinding factor. That is \(C(f) = f H\).
+
+To verify the correctness of \(zG\), the network can therefore compute
+
+\[ (\sum\limits_j C^a_{\pi, j} - \sum\limits_i C^b_{\pi,i}) - f H = z G \].
+
+
+
+\subsection{Avoiding double-spending}
+
+An MLSAG signature contains images \(\tilde{K}_{\pi, j}\) of private keys \(k_{\pi, j}\). An important property in any cryptographic signature scheme is that it should not be forgeable with non-negligible probability. Therefore, to all practical effects, we can assume that the key images must have been deterministically produced from the private keys at hand.
+	
+The network needs only verify that these key images included in MLSAG signatures have not appeared before in other transactions. If they have, then we can be sure that we are witnessing an attempt to spend 
+twice a previously received output \(C^a_{\pi, j}\), addressed to \(K_{\pi, j}\).
+
+
+
+
+
+\subsection{Space requirements}
+
+\subsubsection*{MLSAG signature}
+
+From Section \ref{sec:MLSAG} we recall that an MLSAG signature would be expressed as
+
+\(\sigma(\mathfrak{m}) = (c_1, r_{1, 1}, ..., r_{q+1, 1}, ..., r_{1, m+1}, ..., r_{q+1, m+1}, \tilde{K}_1, ...,  \tilde{K}_m) \)
+
+As a result of the heritage from CryptoNote the values \(\tilde{K}_j\) are not referred to as part of
+the signature, but rather as {\em images} of the private keys \(k_{\pi,j}\) (and \(z\)).
+These values are normally stored separately in the transaction structure as they are used to detect 
+double-spending attacks.
+
+With this in mind and assuming point compression, an MLSAG signature will require \(((q+1) \cdot (m+1) + 1) \cdot 32  \)
+bytes of storage.
+In other words, a transaction with 1 input and a ring size of 32 would consume \( (32 \cdot 2 + 1 ) \cdot 32 = 2080\) bytes.
+
+To this value we would add 32 bytes to store the key image of an input, and  additional space to store the
+ring member offsets in the blockchain. These offsets are stored as variable length integers, hence we can not
+quantify exactly the space needed.
+\\
+
+
+
+The Monero Research Lab is currently developing an alternative signature algorithm to MLSAG. 
+In its current version, space requirements for signatures with the new scheme are logarithmic, 
+or in big-O notation, \(\mathcal{O}(\log n)\).
+We are not able to provide references, as no information has yet been published concerning this new signature scheme.
+
+
+\subsubsection*{Range proofs}
+\label{range-proofs-space}
+
+From Section \ref{sec:borromean} and Section \ref{sec:range_proofs} we obtain that a Borromean signature 
+takes the form of an n-tuple
+
+\[\sigma = (c_1, r_{1, 1}, r_{1, 2}, r_{2, 1}..., r_{64, 2} )  \]
+
+In the case of Borromean signatures, the ring keys are considered part of the signature.
+However, for verifiability it is only necessary to store the commitments \(K_j\), as the
+ring key counterparts can be derived as \(K_j - 2^j H\).
+
+Respecting this convention, a range proof will require \( ( 1 + 64 \cdot 2 + 64  ) 32 = 6176\) bytes
+for each output.
+
+
+
+\section{ Ring Confidential Transactions of type {\tt RCTTypeSimple}}
+
+In the current Monero code base, transactions having more than one input are signed using 
+a different scheme, referred to as {\tt RCTTypeSimple}.
+
+The main characteristic of this approach is that instead of signing the entire set of inputs as a whole,
+the sender signs each of the inputs individually.
+
+Among other things, this has the consequence that one can not use commitments to zero in the same way as for {\tt RCTTypeFull}
+transactions. The rationale is that a public key \(z G\) is a commitment to zero if and only if the sender knows the
+corresponding private key \(z\). If the amounts alone do not sum to zero, then due to the hardness of determining
+\(\gamma\) such that \(H = \gamma G\),
+it would not be possible to know \(z\).
+
+In more detail, assume that Alice  wants to sign input \(j\). 
+Imagine for a moment that we could sign with an expression like the following
+
+\[  C^a_{j} - \sum\limits_i C^b_{i} \\
+= x_j G -  \sum_i y_i G + (a_j - \sum\limits_i  b_i) H \]
+
+Since \(a_j - \sum\limits_i  b_i \ne 0\), Alice would have to solve the DLP for \(H = \gamma G\) in order to obtain the private key of
+the expression, something we have assumed to be a computationally difficult problem. 
+
+
+\subsection{Amount Commitments}
+\label{RCTTypeSimple-commitments}
+
+As explained, the sender is not able to sign against the outputs of the current transaction.
+On the other hand, the sender is spending previous outputs addressed to him, whose amounts
+are equal the current inputs. 
+Therefore, the sender could create new commitments to the input amounts and commit
+to zero respect to each of the previous outputs being spent.
+In this way, the sender would be proving that the transaction spends exactly the outputs
+from previous transactions being used.
+
+In other words, assume that the amounts being spent are \(a_1, ..., a_m\). 
+These amounts were outputs in previous transactions, in which they had commitments 
+
+\[C_{j} = x_j G + a_i H\]
+
+
+The sender can create new commitments to the same amounts but using different blinding factors, that is
+
+\[C'_{j} = x'_j G + a_i H\]
+
+Clearly, she would know the private key of the difference between the two commitments: 
+\[ C_{j} - C'_{j} = (x_j - x'_j) G \] 
+hence, she would be able to use this value as a {\em commitment to zero}.
+\\
+
+Similarly to {\tt RCTTypeFull} transactions, the sender can include the encoded blinding factor and amount in
+the transaction (see Section \ref{amount-commitments}), which will allow the receiver to decode the corresponding
+values using the shared secret.
+\\
+
+Before committing a transaction to the blockchain, the network will want to verify that the transaction balances.
+In the case of {\tt RCTTypeFull} transactions, this was simple, as the signature scheme implied that 
+the sender had signed with the private key of a commitment to zero.
+\\
+
+For {\tt RCTTypeSimple} transactions, the solution used by Monero is to select blinding factors for input and
+output commitments such that
+
+\[\sum_i x_i  - \sum_j y_j = 0  \]
+
+This will have the effect that
+
+\[ (\sum_j C^a_{j} - \sum_i C^b_{i}) - f H = 0\].
+
+
+Fortunately, choosing such blinding factors is simple. In the current version of Monero, \(x_m\) will be simply set
+to 
+
+\[x_m = \sum_i y_i - \sum_{j=1}^{m-1} x_j  \]
+
+
+
+
+
+\subsection{Signature}
+
+As we advanced earlier, in transactions of type {\tt RCTTypeSimple} each input is signed individually.
+Furthermore, the signature scheme employed will be the same as for {\tt RCTTypeFull} transactions, 
+except that the signing keys will be different.
+\\
+
+Assume that Alice is signing input \(j\). This input spends a previous output with key \(K_{\pi, j}\) that had commitment
+\(C_{\pi, j}\). Let \(C'_{\pi, j}\) be a new commitment for the same amount but with a different blinding factor.
+  
+Similarly to the previous scheme, the sender selects \(q\) unrelated outputs and their respective commitments
+from the blockchain, to mix with the real output
+
+\begin{align*}
+& K_{1, j}, ..., K_{\pi-1, j}, K_{\pi+1, j}, ..., K_{q+1, j} \\
+& C_{1, j}, ..., C_{\pi-1, j}, C_{\pi+1, j}, ..., C_{q+1, j}
+\end{align*}
+
+
+She can then sign using the following ring:
+
+\begin{align*}
+\mathcal{R}_j = \{ &\{K_{1, j}, C_{1, j} - C'_{\pi, j}\}, \\
+&... \\
+&\{ K_{\pi, j}, C_{\pi, j} - C'_{\pi, j}\}, \\
+&... \\
+&\{ K_{q+1, j}, C_{q+1, j} - C'_{q+1, j} \}\}
+\end{align*}
+
+
+Indeed, Alice will know the private key for \(K_{\pi, j}\) as well as the one for the commitment to zero 
+\(C_{\pi, j} - C'_{\pi, j}\). 
+Therefore she will be able to sign the input with the ring at hand.
+\\
+
+Each input in {\tt RCTTypeSimple} transactions is signed individually, applying the scheme described in Section \ref{full-signature}, but using rings like \(\mathcal{R}_j\) as defined above.
+
+The advantage of signing inputs individually is that the set of real inputs and commitments to zero are not
+placed at the same index, according to the formulation of the MLSAG algorithm.
+Therefore, even if the origin of one input became traceable, the rest of the inputs would not.
+
+
+\subsection{Space Requirements}
+
+\subsubsection*{MLSAG signature}
+
+Each ring \(\mathcal{R}_j\) contains \((q+1) \cdot 2\) keys.
+From Section \ref{sec:MLSAG} we then derive that using point compression, an input signature
+will require \( (2(q+1) + 1) \cdot 32  \) bytes.
+
+A transaction with 20 inputs using rings with 32 members will need \(((32 \cdot 2 + 1) \cdot 32) 20 = 41600 \) bytes.
+
+For the sake of comparison, if we were to apply the {\tt RCTTypeFull} scheme to the same transaction,
+the MLSAG signature itself would require \(( 32 \cdot 21 + 1) \cdot 32 = 21536\) bytes.
+
+
+\subsubsection*{Range proofs}
+
+The size of range proofs is constant for each output.
+As we calculated for {\tt RCTTypeFull} transactions, a single proof will require 6176 bytes of storage.
+
+
+ 
+
+
+
+

@@ -1,0 +1,28 @@
+% this file is called up by main.tex
+% content in this file will be fed into the main document
+
+% ---------------------------------------------------------------------------
+
+\chapter{Monero Overview} 
+\label{chap:overview}
+
+In what follows we will provide a basic explanation of the Monero transaction protocol and blockhain mechanics.
+
+Monero users have private and public keys. However, these are not directly used so as to avoid linkability to one and the same recipient. Instead, monero uses One-time keys for every single transaction and recipient.
+
+\section{One-time keys}
+\label{sec:generating-one-time-keys}
+
+Sender and Receiver agree on a shared secret using a Diffie-Hellman exchange. The one-time public key is then calculated from the sender's factor in the secret key and the true public key of the receiver.
+
+
+Once the one-time keys have been generated, the sender can mark the transaction with their corresponding public part.
+
+Using the properties derived from the Diffie-Hellman exchange, the receiver is able to recognize transactions addressed to him. 
+
+
+
+
+
+
+

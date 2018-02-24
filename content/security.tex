@@ -1,0 +1,81 @@
+
+
+\chapter{Privacy of Monero}
+\label{chapter:privacy}
+
+If interpreted at nominal value, one-time addresses, hidden amounts and ring signatures should together grant
+a high degree of confidentiality.
+In this chapter we will discuss whether this is a warranted assumption.
+
+
+\section{Transaction confidentiality}
+
+The use of cryptographically secure one-time addresses for outputs ensures that the true receiver of an amount will not be easily identifiable. The hardness of the DLP will prevent connecting user addresses with output addresses. In principle, an observer
+would not be able to determine whether a given transaction output is destined to a given user.
+Expressed differently, it is impossible to prove that two outputs in different transactions have been sent to the same receiver.
+
+Also, transaction amounts are effectively hidden behind commitments, which in turn also rely on the hardness of the DLP to be effective.
+
+In sum, if we look at a single isolated transaction we would not be able to tell who the sender(s)/receiver(s) is/are.
+We would not even be able to tell what the amounts involved are.
+
+However, looking at isolated transactions is not sufficient to determine the level of confidentiality in Monero.
+A more interesting measure of confidentiality is whether currency flows in the blockchain can be determined.
+If that were the case, then the confidentiality of individual transactions would not help, as it would be possible
+to narrow down sources, destinations and intermediaries in those flows.
+
+
+
+\section{Untraceability}
+\label{sec:untraceability}
+
+The MLSAG signature algorithm should further support  transaction anonymity, by not disclosing the identity of a signer
+when mixed with a set of unrelated public keys.
+In Monero transactions, MLSAG signatures are meant to hide which previous outputs are being spent
+in a transaction. Thereby, currency flows should become untraceable.
+\\
+
+However, in a sequence of transactions there may exist frequent patterns that could be exploited
+with statistical tools to break untraceability.
+
+For instance, it is clear that if a given public key has appeared in \(n\) different signatures, due to the linkability property, we can conclude that it is a non-signing key in at least \((n-1)\) of those transactions. This observation might be used to carry out a statistical analysis and narrow down signers in some cases.
+\\
+
+
+An interesting analysis of the actual effectiveness of MLSAG ring signatures can be found in \cite{AnalysisOfLinkability}.
+The version of Monero they analyzed was 0.10, which is more than 1 year old at the time this is written. 
+The findings described have
+been addressed to a large extent, but are nevertheless interesting since they unveil pitfalls in the application
+of ring signatures. Hence, even if some risks may have been mitigated it is important to not trust theoretical
+principles alone without considering how they are applied.
+
+
+Among other findings, they describe that up to 66\% of pre-version 0.11  transactions have ring size 1. 
+That is, they did not mix in any additional
+output keys. Any observer would be able to tell that the previous outputs referenced have been spent. 
+Therefore, if those outputs were
+included in other user transactions, then the linkability of those transactions would increase.
+This possible {\em chain reaction} effect was already described in \cite{MRL-001}, but had not been studied in practice before.
+
+As of version 0.11.0.0 of Monero (live since September 17\nth, 2017), the network enforces a minimum ring size of 
+5 sets of non-duplicate keys. Hence, this particular vulnerability affecting traceability should no longer be there, as long as older
+transactions are not invoked as ring mix-ins.
+
+Using Monte-Carlo simulations on the ring sampling function in Monero,
+the authors were able to make another interesting finding.
+Using a ring size of 5, up to 45\% of the times the output spent was the newest one in the blockchain.
+
+Under the current Monero version, around 25\% of the mix-in outputs are selected from the blocks created in the last
+5 days. This measure mitigates somewhat the risk of analysis of transaction timelines, but clearly, it doesn't removes it altogether.
+\\
+
+Similar observations are made by Kumar {\em et al.} in \cite{DBLP:conf/esorics/KumarFTS17}.
+They analyzed the impact of rings of size 1, commonly appearing outputs and timeliness of transactions. However, they
+do not provide a precise quantification of the impact.
+\\
+
+Monero is not yet a mainstream cryptocurrency. The body of research around it has not reached the levels of, say, Bitcoin.
+Hence, it is currently difficult to ascertain the true effectiveness of ring signatures in making payments untraceable.
+Presumably, ring signatures make it difficult to link inputs to previous outputs, but they can not prevent it altogether.
+
+

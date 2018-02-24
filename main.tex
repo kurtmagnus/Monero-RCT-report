@@ -1,0 +1,234 @@
+% 
+% __________________________________________________________________________________________________________
+%
+%                   LATEX TEMPLATE FOR MISTIC MASTER THESIS
+% ___________________________________________________________________________________________________________
+
+
+\documentclass[a4paper,11pt,english,oneside,onecolumn,final,openany]{report}
+\usepackage{fancyvrb}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[pdftex]{graphicx}
+
+% Useful packages:
+
+% Advanced mathematical formulas and symbols
+% -------------------------------------
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% Color management package
+% -------------------------------------
+\usepackage[usenames,dvipsnames]{color}
+
+% Advanced crossreferencing commands 
+% -------------------------------------
+% Default settings:
+% \usepackage[]{hyperref}
+% Disable link coloring:
+% \usepackage[colorlinks=false]{hyperref}
+% Enable link coloring with personalized colors, make page number (not text) be link on the Table Of Contents (needs color package)
+\usepackage[colorlinks=true, linkcolor=BlueViolet, citecolor=BlueViolet, urlcolor=BlueViolet,linktocpage=true]{hyperref}
+
+% Flexible interface to page dimensions
+% -------------------------------------
+% Default settings:
+% \usepackage[]{geometry}
+% Set specific margins:
+\usepackage[outer=2cm,inner=2.5cm,top=3cm,bottom=2.5cm]{geometry}
+
+% Control line spacing 
+% -------------------------------------
+\usepackage{setspace}
+\AtBeginDocument{\let~=\nobreakspace}
+\spacing{1.1}
+
+% Control papersize and margins
+% -------------------------------------
+\usepackage{anysize} 
+
+% Tabular package extensions
+% -------------------------------------
+% \usepackage{array}
+% \usepackage{multirow}
+
+% Modify chapter level headings
+% -------------------------------------
+\usepackage[Sonny]{fncychap}
+\usepackage{fancyhdr}
+\fancyhead{}
+\fancyfoot{}
+\rhead[\small \leftmark]{\small \thepage}
+\lhead[\small \thepage]{\small \leftmark}
+\setlength{\headheight}{13.2pt}
+
+\ChRuleWidth{1pt}
+\ChNameAsIs
+\ChNameUpperCase
+\ChNameVar{\Large\bf}
+\ChNumVar{\Huge} 
+\ChTitleVar{\LARGE}
+
+% Modify appendix and add subappendices environments
+% -------------------------------------
+\usepackage{appendix}
+
+% Paragraph identation and skip
+% -------------------------------------
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.7ex plus 0.5ex minus 0.8ex}
+
+\usepackage{xspace}
+\newcommand\nd{\textsuperscript{nd}\xspace}
+\newcommand\rd{\textsuperscript{rd}\xspace}
+\newcommand\nth{\textsuperscript{th}\xspace}
+% ___________________________________________________________________________________________________________
+%
+%                  		PDF INFO
+% ___________________________________________________________________________________________________________
+
+\hypersetup{
+    pdftitle = {Monero - Privacy in the blockchain},
+    pdfauthor = {Kurt M. Alonso}
+}
+
+% ___________________________________________________________________________________________________________
+%
+%             FRONTMATTER: title page, abstract, acknowledgements...
+% ___________________________________________________________________________________________________________
+%\title{Monero \\privacy in the blockchain}
+%\author{
+%        Kurt M. Alonso \\
+%         \and                
+%        Jordi Herrera Joancomartí\\
+%       Universitat Autònoma de Barcelona
+%}
+
+\begin{document}
+%\maketitle 
+% ------ Title page ------------------------
+
+\pagenumbering{roman}
+\pagestyle{plain}
+\thispagestyle{empty}
+
+\mbox{}
+\vspace{1cm}
+\begin{center}
+  \includegraphics[width=3cm]{front/figures/logo_uab.jpg}
+  \hspace{0.5cm}
+  \includegraphics[width=2.3cm]{front/figures/logo_uib.jpg}
+  \hspace{0.5cm}
+  \includegraphics[width=2.5cm]{front/figures/logo_uoc.jpg}
+  \hspace{0.5cm}
+  \includegraphics[width=2.8cm]{front/figures/logo_urv.jpg}
+\end{center}
+
+
+\vfill{}
+{\par\centering \textsc{\LARGE Monero \\privacy in the blockchain}\par}
+\bigskip
+{\par\centering \textsc{\large Kurt M. Alonso \\ Jordi Herrera Joancomartí }\par}
+\vfill{}
+
+\begin{center}
+  \begin{minipage}[t]{0.8\columnwidth}
+ 
+  
+  
+  \end{minipage}
+%  \medskip
+\end{center}
+
+\vfill{}
+{\par\centering Universitat Autònoma de Barcelona \par}
+
+% ------ Abstract ------------------------
+
+%\newpage
+%\mbox{}
+\newpage
+\pagestyle{empty}
+\begin{center}
+\vspace*{3.5cm}
+{\LARGE \bfseries  Abstract}
+\end{center}
+\vspace{0.5cm}
+\begin{center} 
+\begin{minipage}{5.5in}
+\begin{center} \vrule width 4.5in height 0.4pt \end{center} 
+\parindent=0pt 
+\include{front/abstract}
+\begin{center} \vrule width 4.5in height 0.4pt \end{center} 
+\end{minipage} 
+\end{center}
+
+
+% ------ Table of contents and figures ---------
+
+\tableofcontents
+%\listoffigures
+
+% ___________________________________________________________________________________________________________
+%
+%             			CONTENT
+% ___________________________________________________________________________________________________________
+
+\newpage
+\pagenumbering{arabic}
+\pagestyle{fancy}
+
+% -------- Chapters ----------------------------
+
+\include{content/introduction}
+\include{content/basicConcepts}
+\include{content/ring-signatures}
+\include{content/commitments}
+\include{content/Transactions}
+%\include{content/security}
+%\include{content/Consensus}
+
+%\include{content/conclusion}
+
+% ___________________________________________________________________________________________________________
+%
+%				BACKMATTER
+% ___________________________________________________________________________________________________________
+
+% -------- Bibliography -----------------------
+
+\addcontentsline{toc}{chapter}{Bibliography}
+{\footnotesize
+\bibliography{back/references.bib}
+\bibliographystyle{plain}
+}
+
+% -------- Appendix ---------------------------
+
+\addappheadtotoc
+\appendixpage
+\include{content/appendix}
+
+% -------- Last page -------------------------
+
+%\newpage 
+%\mbox{}
+%\newpage
+
+%\pagestyle{plain} 
+%\vspace*{6cm} 
+%\begin{center} 
+%\begin{minipage}{4in} 
+%\parindent=0pt \vspace*{1in} 
+%\begin{center} 
+%\vrule width 3in height 0.4pt
+%\\ Kurt M. Alonso\ 
+%\\ Frankfurt am Main, 2017
+%\end{center} 
+%\end{minipage} 
+%\end{center} 
+
+\end{document}
