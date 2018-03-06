@@ -51,7 +51,9 @@ But most of the times it is implicitly assumed.
 \\
 
 We have also used freely hash functions without specifying any concrete algorithms.
-In the case of Monero,  it will typically be \(\mathit{SHA3}\), but if not explictly mentioned then it is not 
+In the case of Monero,  it will typically be a \(\mathit{Keccak}\)\footnote{The Keccak hashing algorithm forms the basis
+for the NIST standard {\em SHA-3}} 
+variant, but if not explictly mentioned then it is not 
 important to the theory.
 
 These hash functions will be applied to any objects, integers, strings, curve points, or combinations of
@@ -204,7 +206,7 @@ Elements of \(\mathbb{F}_{2^{255} - 19} \) are 256-bit integers. In other words,
 represented using 32 bytes.
 
 Consequently, any point in Ed25519 could be represented using 64 bytes.
-Applying {\em Point compression} techniques, described here below, however, it is possible to reduce this amount by half, to 32 bytes..
+Applying {\em Point compression} techniques, described here below, however, it is possible to reduce this amount by half, to 32 bytes.
 
 \subsection{Point compression}
 
