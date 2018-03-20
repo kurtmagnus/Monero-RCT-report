@@ -13,7 +13,7 @@ In other words, a blockchain is a public distributed database, containing data w
 be disputed by any party.
 \\
 
-Cryptocurrencies store transactions in the blockchain. The latter acts as a public ledger of all the consensuated currency operations. Most cryptocurrencies store transactions in clear text, to facilitate the verification of transactions by the community.
+Cryptocurrencies store transactions in the blockchain. The latter acts as a public ledger of all the verified currency operations. Most cryptocurrencies store transactions in clear text, to facilitate the verification of transactions by the community.
 
 Clearly, an open blockchain defies any basic understanding of privacy, since it virtually 
 {\em publicizes} complete transaction histories of its users. 
@@ -22,11 +22,11 @@ Clearly, an open blockchain defies any basic understanding of privacy, since it 
 To address the lack of privacy, users of cryptocurrencies such as Bitcoin can obfuscate transactions by using temporary intermediate addresses \cite{DBLP:journals/corr/NarayananM17}. However, in spite of such measures, with appropriate tools it is possible to analyze flows and to a large extent 
 link true senders with receivers \cite{DBLP:journals/corr/ShenTuY15b, DK-police-tracing-btc, Andrew-Cox-Sandia}.
 
-In contrast, the cryptocurrency Monero, attempts to tackle the issue of privacy by storing only stealth, single-use addresses in the blockchain. In this manner, there will be no effective way of linking senders with receivers nor tracing the origins of funds \cite{Monero-intro}.
+In contrast, the cryptocurrency Monero, attempts to tackle the issue of privacy by storing only stealth, single-use addresses in a blockchain, and authenticating transactions with ring signatures. In this manner, there will be no effective way of linking senders with receivers nor tracing the origins of funds \cite{Monero-intro}.
 
-Additionally, transaction amounts in the Monero blockchain are concealed behind cryptographic constructions, so as to render more complicated to infer currency flows.
+Additionally, transaction amounts in the Monero blockchain are concealed behind cryptographic constructions, so as to complicate the task of inferringr currency flows.
 
-The result is a high level of privacy, possibly unmatched by other common cryptocurrencies.
+The result is a cryptocurrency with a high level of privacy.
 
 
 
@@ -60,7 +60,7 @@ be partially supported for backward compatibility reasons.
 
 We expect the reader to possess a basic understanding of discrete mathematics and algebraic structures, but possibly only
 fundamental insights in the field of cryptography.
-We also expect the user to have a basic understanding of how a cryptocurrency like Bitcoin works.
+We also expect the reader to have a basic understanding of how a cryptocurrency like Bitcoin works.
 
 A reader with this background should be able to follow our constructive, step-by-step description of the elements of the Monero cryptocurrency.
 
@@ -69,19 +69,16 @@ We have also omitted concrete implementation details where we thought they were 
 Our objective has been to present the subject half-way between mathematical cryptography and 
 computer programming, aiming at completeness and conceptual clarity.
 
-Using a consistent
-notation, a succinct and single-threaded explanation, 
-we believe that it is possible to lead a reader with this background to a deep understanding
-of the essential aspects of the Monero cryptocurrency.  
 
 
 \section{Origins of the Monero cryptocurrency}
 
 The cryptocurrency Monero, originally known as BitMonero, was created in April, 2014, as a derivative of the proof-of-concept currency CryptoNote.
 
-The latter is a cryptocurrency devised by an individual or team under the pseudonym of Nicolas van Saberhagen. His/their work was published in October 2013 in \cite{cryptoNoteWhitePaper}.
-It offered sender and receiver anonymity through the use of one-time addresses, and untraceability of flows
-by means of ring signatures.
+The latter was devised by various individuals. 
+A landmark whitepaper describing the cryptocurrency was published under the pseudonym of Nicolas van Saberhagen in October 2013\cite{cryptoNoteWhitePaper}.
+It offered sender and receiver anonymity through by employing one-time addresses, together with ring signatures to make 
+flows untraceable.
 
 Since its inception, Monero has further strengthened its privacy aspects by implementing amount hiding as described by
 Greg Maxwell, among others in \cite{Signatures2015BorromeanRS}, as well as Shen Noether's improvements

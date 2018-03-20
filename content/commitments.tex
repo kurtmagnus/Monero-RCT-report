@@ -28,7 +28,7 @@ To attain information-theoretical privacy, one needs to add a secret {\em blindi
 We can then define the commitment of an amount \(a\) as \(C(x, a) = x G + a H\), where \(x\) is a blinding factor. 
 \\
 
-In the case of Monero, \(H = to\_point(\mathit{SHA3}(G))\), where \(\mathit{SHA3}\) stands for the novel {\em Keccak} hashing algorithm, and \(to\_point\) is a function mapping scalars to curve points.  
+In the case of Monero, \(H = to\_point(\mathit{Keccak}(G))\), where \(\mathit{Keccak}\) stands for the novel hashing algorithm of the same name, and \(to\_point\) is a function mapping scalars to curve points.  
 
 
 

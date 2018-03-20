@@ -26,8 +26,7 @@ Ring signature schemes can display a number of properties that will be useful fo
 	 
 	 
 	\item[Exculpability]
-	The linkability property does not apply to non-signing public keys. That is, a ring member whose
-	public key has been used twice in different signatures will not be linked.
+    A ring member whose public key has been used twice in two ring signatures, but is not the true signer for both, will not be linked.
 	
 \end{description}
 
@@ -48,7 +47,7 @@ In other words, the signer could select any set of involuntary co-signers to ano
 \subsection*{Signature}
 
 Let \(\mathfrak{m}\) be the message to sign, \(\mathcal{R} = \{K_1, K_2, ..., K_n\}\) a set of distinct public keys (a group/ring), \(k_\pi\) the private key corresponding to \(K_\pi \in \mathcal{R}\). Assume also the existence of two hash functions, \(\mathcal{H}_n\) and \(\mathcal{H}_p\),
-mapping to integers and curve points respectively\footnote{ 
+mapping to integers \(\pmod N\), and curve points respectively\footnote{ 
 	A simple definition for \(\mathcal{H}_p\) 
 	could be \(\mathcal{H}_p(x) = \mathcal{H}_n(x) G\)
 }.
@@ -165,7 +164,7 @@ Correctness of the approach can be verified in a similar way.
 \\
 
 The alert reader will no doubt notice that the value \(\tilde{K} \) depends only on the keys of the true signer.
-In other words, two signatures will now be linkable if and only if the same private key was used for create the signature,
+In other words, two signatures will now be linkable if and only if the same private key was used to create the signature,
 independently of the ring used to anonymize the signer. 
 
 This notion of linkability will prove to be more useful for Monero than the one offered by the LSAG algorithm, as it

@@ -8,8 +8,6 @@
 \chapter{Basic concepts}
 \label{chap:basicConcepts}
 
-We will use this section to introduce basic cryptographic building elements that will pervade the rest of this report.
-
 
 \section{A few words about notation}
 
@@ -39,12 +37,12 @@ Beyond that, we have aimed at being {\em conceptual} in our presentation of algo
 A reader with a computer science background could consider that we have neglected
  questions like the bit representation of items, or in some cases, how to carry out concrete operations.
 
-However, we don't see this as a loss.
+However, this does not entail any loss.
 A simple object such as an integer or a string can always be represented by a bit string. 
 So-called {\em endianness} is rarely relevant, and is mostly a matter of convention for our algorithms.
 
-Elliptic curve points would normally be represented by pairs \((x, y)\), and therefore could be represented
-as two integer. However, in the world of cryptography it is common to apply {\em point compression} techniques,
+Elliptic curve points would normally be represented by pairs \((x, y)\) of integers.
+However, in the world of cryptography it is common to apply {\em point compression} techniques,
 which allow representing a point using only the space of one coordinate.
 For our conceptual approach it is quite often accessory whether point compression is used or not.
 But most of the times it is implicitly assumed. 
@@ -53,13 +51,14 @@ But most of the times it is implicitly assumed.
 We have also used freely hash functions without specifying any concrete algorithms.
 In the case of Monero,  it will typically be a \(\mathit{Keccak}\)\footnote{The Keccak hashing algorithm forms the basis
 for the NIST standard {\em SHA-3}} 
-variant, but if not explictly mentioned then it is not 
-important to the theory.
+variant, but if not explictly mentioned then it's not important to the theory.
 
 These hash functions will be applied to any objects, integers, strings, curve points, or combinations of
-these objects.
-These occurrences should be interpreted as hashes of bit representations, or the contatenation of such
+these objects. 
+These occurrences should be interpreted as hashes of bit representations, or the concatenation of such
 representations.
+Depending on context, the result of a hash will be numeric, a bit string or even a curve point.
+Further details in this respect will be given when needed in this report. 
 
 
 
@@ -99,12 +98,12 @@ It turns out that elliptic curves have {\em abelian group} structure under the a
 A concise definition of this notion can be found under \url{https://brilliant.org/wiki/abelian-group/}}.
 
 
-The order \(N\) of an elliptic curve \(EC\) can be loosely defined as the number of points in the curve. Clearly, by the definition of addition above it follows that an elliptic curve over a finite field will be equally finite.  
+The order \(N\) of an elliptic curve \(EC\) can be loosely defined as the number of points in the curve. Clearly, by the definition of addition above it follows that an elliptic curve over a finite field will also be finite.  
 
 
 A generator \(G\) of \(EC\) is a point in the curve such that for every other point \(P\) in \(EC\) there exists \(n\) satisfying that \(P = n G\).
 
-Calculating the scalar product \(n P\) can be done without difficulties. However, finding \(n\) such that \(P_1 = n P_2\) is known to be computationally hard. By analogy to modular arithmetic, this problem is often called the {\em discrete logarithm problem} (DLP). In other words, scalar multiplication can be seen as a {\em one-way function}, which paves the way
+Calculating the scalar product \(n P\) can be done without difficulties. However, given two arbitrary points \(P_1\) and \(P_2\), finding \(n\) such that \(P_1 = n P_2\) is known to be computationally hard. By analogy to modular arithmetic, this problem is often called the {\em discrete logarithm problem} (DLP). In other words, scalar multiplication can be seen as a {\em one-way function}, which paves the way
 for using elliptic curves for cryptography. 
 
 
@@ -192,15 +191,18 @@ The curve is defined over the prime field \(\mathbb{F}_{2^{255} - 19} \) by mean
 \[ -x^2 + y^2 = 1 - \frac{121665}{121666} x^2 y^2 \]
 
 This curve addresses many concerns raised by the cryptography community. It is well known that {\em NIST}\footnote{National Institute of Standards and Technology, \url{https://www.nist.gov/}} 
-standard algorithms have issues. In recent times it has become clear that the random number generation algorithm {\em PNRG} is flawed and could contain a potential backdoor \cite{hales2014nsa}. Seen from a broader perspective, curves endorsed by the NIST, are also indirectly endorsed by the NSA, something that the cryptography community sees with suspicion.
+standard algorithms have issues. In recent times it has become clear that the random number generation algorithm {\em PNRG} is flawed and contains a potential backdoor\cite{hales2014nsa}. Seen from a broader perspective, curves endorsed by the NIST, are also indirectly endorsed by the NSA, something that the cryptography community sees with suspicion. It
+is well known that NSA has at times used its power over the NIST to weaken cryptographic algorithms\cite{NSA-NIST}.
 \\
 
 Curve Ed25519 is not subject to any patents (see \cite{ECC-patents} for a discussion on this subject), and the team behind it has
 developed and adapted basic cryptographic algorithms with efficiency in mind \cite{cryptoeprint:2007:286}.
 More importantly, it is currently thought to be secure.
 
-Twisted Edwards curves have order expressable as \(2^c q\), where \(q\) is a prime number and \(c\) a positive integer. In the case of curve Ed25519, its order is \[2^3 \cdot 7237005577332262213973186563042994240857116359379907606001950938285454250989\]
-\\
+Twisted Edwards curves have order expressable as \(2^c q\), where \(q\) is a prime number and \(c\) a positive integer. In the case of curve Ed25519, its order is a 76 decimal digit number:
+\[2^3 \cdot 7237005577332262213973186563042994240857116359379907606001950938285454250989\]
+
+
 \subsection{Binary representation}
 Elements of \(\mathbb{F}_{2^{255} - 19} \) are 256-bit integers. In other words, they can be
 represented using 32 bytes.
