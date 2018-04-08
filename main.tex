@@ -14,6 +14,9 @@
 \usepackage{amssymb}
 \usepackage{amsfonts}
 
+% Footnotes
+% -------------------------------------
+\usepackage[stable]{footmisc}
 
 % Color management package
 % -------------------------------------
@@ -28,6 +31,18 @@
 % Enable link coloring with personalized colors, make page number (not text) be link on the Table Of Contents (needs color package)
 \usepackage[colorlinks=true, linkcolor=BlueViolet, citecolor=BlueViolet, urlcolor=BlueViolet,linktocpage=true]{hyperref}
 
+%% more footnote stuff
+\usepackage{footnotebackref}
+
+\let\oldFootnote\footnote
+\newcommand\nextToken\relax
+
+\renewcommand\footnote[1]{%
+    \oldFootnote{#1}\futurelet\nextToken\isFootnote}
+
+\newcommand\isFootnote{%
+    \ifx\footnote\nextToken\textsuperscript{,}\fi}
+
 % Flexible interface to page dimensions
 % -------------------------------------
 % Default settings:
@@ -40,6 +55,7 @@
 \usepackage{setspace}
 \AtBeginDocument{\let~=\nobreakspace}
 \spacing{1.1}
+
 
 % Control papersize and margins
 % -------------------------------------
@@ -71,7 +87,7 @@
 % -------------------------------------
 \usepackage{appendix}
 
-% Paragraph identation and skip
+% Paragraph indentation and skip
 % -------------------------------------
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.7ex plus 0.5ex minus 0.8ex}
@@ -80,14 +96,20 @@
 \newcommand\nd{\textsuperscript{nd}\xspace}
 \newcommand\rd{\textsuperscript{rd}\xspace}
 \newcommand\nth{\textsuperscript{th}\xspace}
+
 % ___________________________________________________________________________________________________________
 %
 %                  		PDF INFO
 % ___________________________________________________________________________________________________________
 
+
+
+
+
+
 \hypersetup{
-    pdftitle = {Monero - Privacy in the blockchain},
-    pdfauthor = {Kurt M. Alonso}
+    pdftitle = {Zero to Monero - Privacy in the blockchain},
+    pdfauthor = {koe}
 }
 
 
@@ -95,6 +117,11 @@
 \begin{document}
 %\maketitle 
 % ------ Title page ------------------------
+\setlength{\abovedisplayskip}{0pt}
+\setlength{\belowdisplayskip}{0pt}
+\setlength{\abovedisplayshortskip}{0pt}
+\setlength{\belowdisplayshortskip}{0pt}
+
 
 \pagenumbering{roman}
 \pagestyle{plain}
@@ -102,22 +129,18 @@
 
 \mbox{}
 \vspace{1cm}
+
 \begin{center}
-  \includegraphics[width=3cm]{front/figures/logo_uab.jpg}
-  \hspace{0.5cm}
-  \includegraphics[width=2.3cm]{front/figures/logo_uib.jpg}
-  \hspace{0.5cm}
-  \includegraphics[width=2.5cm]{front/figures/logo_uoc.jpg}
-  \hspace{0.5cm}
-  \includegraphics[width=2.8cm]{front/figures/logo_urv.jpg}
+  \includegraphics[width=3cm]{front/figures/monero-symbol-1280.png}
 \end{center}
 
 
 \vfill{}
-{\par\centering \textsc{\LARGE Monero \\Privacy in the blockchain}\par}
+{\par\centering \textsc{\LARGE Zero to Monero \\Privacy in the blockchain: First Edition}\par}
 \bigskip
 {\par\centering \textsc{\large Kurt M. Alonso \\ }
-\par \textsc{\large Jordi Herrera Joancomartí }\par}
+\par \textsc{\large Jordi Herrera Joancomartí \\}\par
+\par \textsc{\large Koe\footnote{Forked from original paper's github 03/20/2018. https://github.com/kurtmagnus/Monero-RCT-report} }\par}
 \vfill{}
 
 \begin{center}
@@ -130,8 +153,6 @@
 \end{center}
 
 \vfill{}
-{\par\centering Universitat Autònoma de Barcelona \par}
-
 % ------ Abstract ------------------------
 
 %\newpage
