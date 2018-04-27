@@ -168,9 +168,9 @@ Any third party can verify the signature by calculating
 The signature will be valid if and only if the first coordinate of \(Q = (x_Q, y_Q)\) satisfies that  
 \[x_Q = x \pmod p\]. 
 
-\subsubsection*{Why it works}
+\subsubsection*{Correctness}
 
-This stems from the fact that
+The correctness of the scheme can be derived from the fact that
 \begin{align*}
 Q &= u_1 G + u_2 K \\
   &= s^{-1} h G + s^{ -1} x k G \\
@@ -283,9 +283,9 @@ Verification is performed as follows
 
 
 
-\subsubsection{Why it works}
+\subsubsection{Correctness}
 
-Why the signature verification works can be derived from
+Why the signature verification works can be derived from the following equality:
 
 \[ 2^c s G = 2^c ( (r + \mathcal{H}(R, K,  \mathfrak{m}) \cdot k) \cdot G = 2^c R + 2^c \mathcal{H}(R, K,  \mathfrak{m}) \cdot K )\]
 

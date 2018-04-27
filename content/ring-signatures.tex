@@ -87,7 +87,7 @@ The verification of a signature is done in the following manner
 
 
 
-\subsection*{Why it works}
+\subsection*{Correctness}
 
 We can convince ourselves that the algorithm works by observing the following:
 
@@ -196,7 +196,7 @@ The {\em MLSAG} algorithm would be described by the following steps:
 
 \begin{enumerate}
 	
-	\item Calculate \(\tilde{K_j} = k_{\pi_i} \mathcal{H}_p(K_{\pi, j})\) for all \(j \in \{1, 2, ..., m\}\)
+	\item Calculate \(\tilde{K_j} = k_{\pi, j} \mathcal{H}_p(K_{\pi, j})\) for all \(j \in \{1, 2, ..., m\}\)
 	
 	\item Generate random numbers  \(\alpha_j \in_R \mathbb{Z}_q\), and \(r_{i, j} \in_R \mathbb{Z}_q\) (excluding all \(r_{\pi, j}\)) for \(j \in \{1, 2, ..., m\}\) 
 	
@@ -206,8 +206,14 @@ The {\em MLSAG} algorithm would be described by the following steps:
 	\]
 	
 	\item For \(i = \pi+1, \pi+2, ..., n, 1, 2, ..., \pi-1\) calculate, replacing \(n + 1 \rightarrow 1\)
-	\[  c_{i+1} = \mathcal{H}_n(\mathfrak{m}, r_{i, 1} G + c_i K_{i, 1}, r_{i, 1} \mathcal{H}_p(K_{i, 1}) + c_i \tilde{K}_1, 
-	..., r_{i, m} G + c_i K_{i, m}, r_{i, m} \mathcal{H}_p(K_{i, m}) + c_i \tilde{K}_m)  \] 
+	\begin{align*}
+	  c_{i+1} = \mathcal{H}_n(&\mathfrak{m},\\
+	                          & r_{i, 1} G + c_i K_{i, 1}, \\
+	                          & \quad r_{i, 1} \mathcal{H}_p(K_{i, 1}) + c_i \tilde{K}_1,\\ 
+	                          &..., \\
+	                          & r_{i, m} G + c_i K_{i, m}, \\
+	                          & \quad r_{i, m} \mathcal{H}_p(K_{i, m}) + c_i \tilde{K}_m)
+	\end{align*} 
 	
 	
 	\item Define \(r_{\pi, j} = \alpha_j -k_{\pi, j} c_\pi \pmod N\)
@@ -223,15 +229,19 @@ The verification of a signature is done in the following manner
 \begin{enumerate}
 	\item  For \(i = 1, ..., n\) compute, replacing \(n + 1 \rightarrow 1\)
 	\begin{align*}
-	c'_{i+1} = \mathcal{H}_n(\mathfrak{m}, r_{i, 1} G + c_i K_{i, 1}, r_{i, 1} \mathcal{H}_p(K_{i, 1}) + c_i \tilde{K}_1, 
-	..., r_{i, m} G + c_i K_{i, m}, r_{i, m} \mathcal{H}_p(K_{i, m}) + c_i \tilde{K}_m) 
+	c'_{i+1} = \mathcal{H}_n(&\mathfrak{m}, \\
+	                         & r_{i, 1} G + c_i K_{i, 1}, \\
+	                         & \quad r_{i, 1} \mathcal{H}_p(K_{i, 1}) + c_i \tilde{K}_1,\\ 
+	                         & ..., \\
+	                         & r_{i, m} G + c_i K_{i, m}, \\
+	                         & \quad r_{i, m} \mathcal{H}_p(K_{i, m}) + c_i \tilde{K}_m) 
 	\end{align*}
 	
 	\item if \(c'_1 = c_1\) then the signature is valid
 \end{enumerate}
 
 
-\subsection*{Why it works}
+\subsection*{Correctness}
 
 Just as with the original LSAG algorithm, we can readily observe that
 
@@ -356,7 +366,7 @@ The signature will be valid if \(c'_1 = c_1\).
 
 
 
-\subsection*{Why it works}
+\subsection*{Correctness}
 
 
 \begin{enumerate}
